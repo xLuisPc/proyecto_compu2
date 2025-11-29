@@ -1,0 +1,172 @@
+# =============================================================================
+# ARCHIVOS Y CARPETAS GRANDES - Evitar archivos que exceden límites de Git
+# =============================================================================
+
+# Modelos entrenados (pueden ser muy grandes, >100MB)
+*.h5
+*.hdf5
+*.pb
+*.ckpt
+*.pkl
+*.joblib
+*.pth
+*.pt
+
+# Dataset completo (miles de imágenes, varios GB)
+dataset/
+!dataset/.gitkeep
+
+# Carpetas generadas automáticamente con datos
+train/
+test/
+validation/
+
+# Carpetas de resultados que pueden contener archivos grandes
+modelos/
+resultados/
+results/
+outputs/
+logs/
+
+# Archivos de checkpoints y modelos guardados
+checkpoints/
+saved_models/
+weights/
+
+# =============================================================================
+# ARCHIVOS TEMPORALES Y DE SISTEMA
+# =============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Entornos virtuales
+venv/
+ENV/
+env/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# =============================================================================
+# ARCHIVOS ESPECÍFICOS DEL PROYECTO
+# =============================================================================
+
+# Imágenes grandes (se pueden generar de nuevo)
+# Mantener solo las imágenes pequeñas de visualización
+# Descomentar si quieres ignorar todas las imágenes PNG grandes
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
+
+# Archivos de configuración local
+.env
+.env.local
+config.local.py
+
+# Archivos de datos temporales
+*.csv
+*.tsv
+*.json
+!requirements.txt
+!package.json
+!package-lock.json
+
+# Archivos de log
+*.log
+logs/
+*.out
+
+# =============================================================================
+# ARCHIVOS DE KAGGLE Y AUTENTICACIÓN
+# =============================================================================
+
+# Credenciales de Kaggle (no subir nunca)
+.kaggle/
+kaggle.json
+*.kaggle.json
+
+# =============================================================================
+# ARCHIVOS DE SISTEMA OPERATIVO
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# =============================================================================
+# BACKUPS Y ARCHIVOS TEMPORALES
+# =============================================================================
+
+*.bak
+*.backup
+*.tmp
+*.temp
+*~
+.cache/
+
+# =============================================================================
+# NOTAS
+# =============================================================================
+# 
+# Si necesitas versionar archivos grandes:
+# - Usa Git LFS (Large File Storage): https://git-lfs.github.com/
+# - O usa servicios externos como DVC (Data Version Control)
+# - O almacena modelos en servicios de almacenamiento en la nube
+# 
+# Para usar Git LFS con modelos:
+#   git lfs install
+#   git lfs track "*.h5"
+#   git add .gitattributes
+#   git commit -m "Add Git LFS tracking for model files"
+#
+
