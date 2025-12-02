@@ -42,7 +42,7 @@ export const SegmentationViewer: React.FC<SegmentationViewerProps> = ({
     return null;
   }
 
-  const { image_base64, parameters, class_distribution, original_size } = segmentationResponse;
+  const { image_base64, parameters, original_size } = segmentationResponse;
 
   return (
     <div className="segmentation-viewer">
@@ -70,53 +70,6 @@ export const SegmentationViewer: React.FC<SegmentationViewerProps> = ({
         />
       </div>
 
-      <div className="segmentation-legend">
-        <h3>Distribución de Biomas</h3>
-        <div className="legend-items">
-          {class_distribution.map((classInfo, index) => (
-            <div key={index} className="legend-item">
-              <div
-                className="legend-color"
-                style={{ backgroundColor: classInfo.color.hex }}
-              />
-              <div className="legend-info">
-                <span className="legend-emoji">{classInfo.emoji}</span>
-                <span className="legend-name">{classInfo.display_name}</span>
-                <span className="legend-percentage">
-                  {classInfo.percentage.toFixed(2)}%
-                </span>
-              </div>
-              <div className="legend-bar">
-                <div
-                  className="legend-bar-fill"
-                  style={{
-                    width: `${classInfo.percentage}%`,
-                    backgroundColor: classInfo.color.hex,
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="segmentation-parameters">
-        <h3>Parámetros de Segmentación</h3>
-        <div className="parameters-grid">
-          <div className="parameter-item">
-            <span className="parameter-label">Tamaño de tile:</span>
-            <span className="parameter-value">{parameters.tile_size} × {parameters.tile_size} px</span>
-          </div>
-          <div className="parameter-item">
-            <span className="parameter-label">Stride (overlap):</span>
-            <span className="parameter-value">{parameters.stride} px</span>
-          </div>
-          <div className="parameter-item">
-            <span className="parameter-label">Grosor de bordes:</span>
-            <span className="parameter-value">{parameters.border_width} px</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

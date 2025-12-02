@@ -86,5 +86,5 @@ Verifica el estado del servicio
 
 ## 🔧 Configuración
 
-El modelo se carga desde `best_model.h5` en la raíz del proyecto. Asegúrate de que el archivo exista antes de iniciar el servidor.
+El modelo se carga desde `modelo_entrenado/best_model.h5`. Asegúrate de que el archivo exista antes de iniciar el servidor.
 

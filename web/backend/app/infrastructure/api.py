@@ -29,7 +29,11 @@ app.add_middleware(
 )
 
 # Cargar el modelo al iniciar
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "../../../..", "best_model.h5")
+# Siempre usar el archivo ubicado en la raíz del proyecto
+PROJECT_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
+)
+MODEL_PATH = os.path.join(PROJECT_ROOT, "best_model.h5")
 model_repository: TensorFlowModelRepository = None
 
 

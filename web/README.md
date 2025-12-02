@@ -88,11 +88,11 @@ El frontend estará disponible en: `http://localhost:5173`
 
 - Python 3.7+
 - Node.js 18+
-- Modelo entrenado (`best_model.h5`) en la raíz del proyecto
+- Modelo entrenado (`modelo_entrenado/best_model.h5`)
 
 ## 📝 Notas
 
-- El modelo debe estar en la raíz del proyecto como `best_model.h5`
-- El backend carga el modelo al iniciar
+- El modelo debe estar en `modelo_entrenado/best_model.h5`
+- El backend carga el modelo al iniciar desde esa ubicación
 - El frontend se conecta automáticamente al backend en `http://localhost:8000`
 

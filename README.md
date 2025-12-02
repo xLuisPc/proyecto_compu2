@@ -359,29 +359,17 @@ pip install kagglehub
 
 ## 🚀 Uso
 
-### Opción 1: Entrenamiento Local (Script Python)
+### Opción 1: Entrenamiento Local (Notebook)
 
-1. **Preparar el dataset**:
-   - Asegúrate de que el dataset esté en `dataset/data/` con las 4 carpetas de clases
+1. **Preparar el ambiente**:
+   - Instala dependencias con `pip install -r requirements.txt`.
+   - Coloca el dataset en `dataset/data/` respetando las 4 carpetas de clases.
 
-2. **Ejecutar el script**:
-   ```bash
-   python entrenar_modelo.py
-   ```
-   
-   O con permisos de ejecución:
-   ```bash
-   ./entrenar_modelo.py
-   ```
+2. **Ejecutar `modelo.ipynb` localmente**:
+   - Abre el notebook en Jupyter/VSC y configura el kernel con las dependencias previas.
+   - Ejecuta todas las celdas. El notebook descarga/valida los datos, realiza la partición train/test, corre la validación cruzada para CNN1/CNN2, entrena el mejor modelo y genera los artefactos (`best_model.h5`, matrices de confusión, ejemplos correctos/incorrectos, etc.).
 
-3. **El script ejecutará automáticamente**:
-   - Partición de datos (train/test)
-   - Validación cruzada de ambas arquitecturas
-   - Selección del mejor modelo
-   - Entrenamiento final
-   - Evaluación y generación de visualizaciones
-
-### Opción 2: Entrenamiento en Google Colab (Notebook)
+### Opción 2: Entrenamiento en Google Colab
 
 1. Abre `modelo.ipynb` en Google Colab
 2. Activa GPU: **Runtime → Change runtime type → GPU → T4**
@@ -431,7 +419,7 @@ print(f"Predicción: {CLASSES[predicted_class_idx]} (Confianza: {confidence:.2%}
 
 ### Optimizaciones de Memoria
 
-- El script usa `ImageDataGenerator` para cargar imágenes en lotes y evitar cargar todo el dataset en memoria
+- El pipeline del notebook usa `ImageDataGenerator` para cargar imágenes en lotes y evitar cargar todo el dataset en memoria
 - Se limpia la sesión de TensorFlow después de cada fold en la validación cruzada
 - Se eliminan temporalmente las carpetas de cada fold después de su evaluación
 
