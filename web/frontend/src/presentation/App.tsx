@@ -5,13 +5,14 @@ import React, { useState } from 'react';
 import { ImageUploader } from './components/ImageUploader';
 import { PredictionResult } from './components/PredictionResult';
 import { BatchResults } from './components/BatchResults';
+import { SegmentationViewer } from './components/SegmentationViewer';
 import { ApiClient } from '@infrastructure/api-client';
-import { PredictionResponse, BatchResponse } from '@domain/entities';
+import { PredictionResponse, BatchResponse, SegmentationResponse } from '@domain/entities';
 import './App.css';
 
 const apiClient = new ApiClient();
 
-type Mode = 'single' | 'batch';
+type Mode = 'single' | 'batch' | 'segment';
 
 export const App: React.FC = () => {
   const [mode, setMode] = useState<Mode>('single');
@@ -25,6 +26,16 @@ export const App: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<{ [key: string]: string }>({});
   const [batchResult, setBatchResult] = useState<BatchResponse | null>(null);
+  
+  // Modo segmentación
+  const [segmentFile, setSegmentFile] = useState<File | null>(null);
+  const [segmentImage, setSegmentImage] = useState<string | null>(null);
+  const [segmentResult, setSegmentResult] = useState<SegmentationResponse | null>(null);
+  const [segmentParams, setSegmentParams] = useState({
+    tileSize: 64,
+    stride: 32,
+    borderWidth: 2,
+  });
   
   // Estados compartidos
   const [loading, setLoading] = useState(false);
@@ -92,15 +103,53 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleSegmentImageSelect = (file: File) => {
+    setSegmentFile(file);
+    setSegmentResult(null);
+    setError(null);
+
+    // Crear preview de la imagen
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setSegmentImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSegment = async () => {
+    if (!segmentFile) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const segmentation = await apiClient.predictSegment(
+        segmentFile,
+        segmentParams.tileSize,
+        segmentParams.stride,
+        segmentParams.borderWidth
+      );
+      setSegmentResult(segmentation);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error desconocido');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleReset = () => {
     if (mode === 'single') {
       setSelectedFile(null);
       setSelectedImage(null);
       setResult(null);
-    } else {
+    } else if (mode === 'batch') {
       setSelectedFiles([]);
       setImagePreviews({});
       setBatchResult(null);
+    } else if (mode === 'segment') {
+      setSegmentFile(null);
+      setSegmentImage(null);
+      setSegmentResult(null);
     }
     setError(null);
   };
@@ -128,10 +177,16 @@ export const App: React.FC = () => {
           >
             📚 Múltiples Imágenes
           </button>
+          <button
+            className={`mode-btn ${mode === 'segment' ? 'active' : ''}`}
+            onClick={() => handleModeChange('segment')}
+          >
+            🗺️ Segmentación
+          </button>
         </div>
       </header>
 
-      <main className={`app-main ${mode === 'batch' ? 'batch-mode' : ''}`}>
+      <main className={`app-main ${mode === 'batch' ? 'batch-mode' : ''} ${mode === 'segment' ? 'segment-mode' : ''}`}>
         {mode === 'single' ? (
           <>
             <div className="upload-section">
@@ -163,7 +218,7 @@ export const App: React.FC = () => {
               />
             </div>
           </>
-        ) : (
+        ) : mode === 'batch' ? (
           <div className="batch-section">
             <div className="upload-section">
               <ImageUploader
@@ -191,6 +246,96 @@ export const App: React.FC = () => {
               <BatchResults
                 batchResponse={batchResult}
                 imagePreviews={imagePreviews}
+                loading={loading}
+                error={error}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="segment-section">
+            <div className="upload-section">
+              <ImageUploader
+                onImageSelect={handleSegmentImageSelect}
+                selectedImage={segmentImage}
+                multiple={false}
+              />
+              
+              <div className="segment-parameters">
+                <h3>Parámetros de Segmentación</h3>
+                <div className="params-grid">
+                  <div className="param-group">
+                    <label htmlFor="tileSize">Tamaño de Tile:</label>
+                    <input
+                      id="tileSize"
+                      type="number"
+                      min="32"
+                      max="256"
+                      step="32"
+                      value={segmentParams.tileSize}
+                      onChange={(e) =>
+                        setSegmentParams({
+                          ...segmentParams,
+                          tileSize: parseInt(e.target.value) || 64,
+                        })
+                      }
+                    />
+                    <span className="param-hint">px (32-256)</span>
+                  </div>
+                  <div className="param-group">
+                    <label htmlFor="stride">Stride (Overlap):</label>
+                    <input
+                      id="stride"
+                      type="number"
+                      min="16"
+                      max="128"
+                      step="16"
+                      value={segmentParams.stride}
+                      onChange={(e) =>
+                        setSegmentParams({
+                          ...segmentParams,
+                          stride: parseInt(e.target.value) || 32,
+                        })
+                      }
+                    />
+                    <span className="param-hint">px (16-128)</span>
+                  </div>
+                  <div className="param-group">
+                    <label htmlFor="borderWidth">Grosor de Bordes:</label>
+                    <input
+                      id="borderWidth"
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={segmentParams.borderWidth}
+                      onChange={(e) =>
+                        setSegmentParams({
+                          ...segmentParams,
+                          borderWidth: parseInt(e.target.value) || 2,
+                        })
+                      }
+                    />
+                    <span className="param-hint">px (1-10)</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="actions">
+                {segmentFile && !loading && (
+                  <>
+                    <button onClick={handleSegment} className="btn btn-primary">
+                      Segmentar Imagen
+                    </button>
+                    <button onClick={handleReset} className="btn btn-secondary">
+                      Cambiar Imagen
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="result-section">
+              <SegmentationViewer
+                segmentationResponse={segmentResult}
                 loading={loading}
                 error={error}
               />

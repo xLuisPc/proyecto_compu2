@@ -675,3 +675,249 @@ body {
   font-size: 1.25rem;
 }
 
+/* Modo Segmentación */
+.app-main.segment-mode {
+  grid-template-columns: 1fr;
+  max-width: 1400px;
+}
+
+.segment-section {
+  width: 100%;
+}
+
+.segment-parameters {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: var(--bg-color);
+  border-radius: 8px;
+}
+
+.segment-parameters h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.param-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.param-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.param-group input {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.param-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.param-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Segmentation Viewer */
+.segmentation-viewer {
+  animation: fadeIn 0.3s ease;
+}
+
+.segmentation-viewer.loading {
+  text-align: center;
+  padding: 3rem;
+}
+
+.segmentation-viewer.loading .loading-hint {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.segmentation-viewer.error {
+  text-align: center;
+  padding: 3rem;
+  color: var(--error-color);
+}
+
+.segmentation-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.segmentation-header h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.segmentation-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.segmented-image-container {
+  width: 100%;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background: var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.segmented-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.segmentation-legend {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--bg-color);
+  border-radius: 8px;
+}
+
+.segmentation-legend h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--card-bg);
+  border-radius: 6px;
+}
+
+.legend-color {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 2px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.legend-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.legend-emoji {
+  font-size: 1.5rem;
+}
+
+.legend-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.legend-percentage {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.legend-bar {
+  width: 100px;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.legend-bar-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+.segmentation-parameters {
+  padding: 1.5rem;
+  background: var(--bg-color);
+  border-radius: 8px;
+}
+
+.segmentation-parameters h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.parameters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.parameter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: var(--card-bg);
+  border-radius: 6px;
+}
+
+.parameter-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.parameter-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Responsive para segmentación */
+@media (max-width: 768px) {
+  .params-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .segmentation-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .parameters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
