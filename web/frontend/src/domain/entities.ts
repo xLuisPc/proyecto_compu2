@@ -28,3 +28,19 @@ export interface ImageClass {
   emoji: string;
 }
 
+export interface BatchResultItem {
+  filename: string;
+  success: boolean;
+  prediction?: Prediction;
+  all_predictions?: AllPrediction[];
+  error?: string;
+}
+
+export interface BatchResponse {
+  success: boolean;
+  total: number;
+  processed: number;
+  failed: number;
+  results: BatchResultItem[];
+}
+

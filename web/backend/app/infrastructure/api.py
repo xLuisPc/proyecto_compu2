@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from PIL import Image
 import io
+from typing import List
 from app.infrastructure.model_service import TensorFlowModelRepository
 from app.domain.entities import CLASSES
 import os
@@ -127,6 +128,89 @@ async def predict_image(file: UploadFile = File(...)):
             status_code=500,
             detail=f"Error al procesar la imagen: {str(e)}"
         )
+
+
+@app.post("/predict/batch")
+async def predict_batch(files: List[UploadFile] = File(...)):
+    """
+    Clasifica múltiples imágenes satelitales en lote
+    
+    Args:
+        files: Lista de archivos de imagen a clasificar
+        
+    Returns:
+        JSON con las predicciones de todas las imágenes
+    """
+    if model_repository is None:
+        raise HTTPException(status_code=503, detail="Modelo no disponible")
+    
+    if not files or len(files) == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Debe proporcionar al menos una imagen"
+        )
+    
+    results = []
+    
+    for idx, file in enumerate(files):
+        # Validar tipo de archivo
+        if not file.content_type or not file.content_type.startswith("image/"):
+            results.append({
+                "filename": file.filename or f"imagen_{idx}",
+                "success": False,
+                "error": "El archivo debe ser una imagen"
+            })
+            continue
+        
+        try:
+            # Leer imagen
+            image_data = await file.read()
+            image = Image.open(io.BytesIO(image_data))
+            
+            # Preprocesar imagen
+            image_array = model_repository.preprocess_image(image)
+            
+            # Realizar predicción
+            prediction = model_repository.predict(image_array)
+            
+            results.append({
+                "filename": file.filename or f"imagen_{idx}",
+                "success": True,
+                "prediction": {
+                    "class": prediction.class_name,
+                    "display_name": next(
+                        cls.display_name for cls in CLASSES 
+                        if cls.name == prediction.class_name
+                    ),
+                    "emoji": next(
+                        cls.emoji for cls in CLASSES 
+                        if cls.name == prediction.class_name
+                    ),
+                    "confidence": round(prediction.confidence * 100, 2)
+                },
+                "all_predictions": [
+                    {
+                        **pred,
+                        "confidence": round(pred["confidence"] * 100, 2)
+                    }
+                    for pred in prediction.all_predictions
+                ]
+            })
+        
+        except Exception as e:
+            results.append({
+                "filename": file.filename or f"imagen_{idx}",
+                "success": False,
+                "error": f"Error al procesar la imagen: {str(e)}"
+            })
+    
+    return JSONResponse({
+        "success": True,
+        "total": len(files),
+        "processed": len([r for r in results if r.get("success", False)]),
+        "failed": len([r for r in results if not r.get("success", False)]),
+        "results": results
+    })
 
 
 @app.get("/health")
